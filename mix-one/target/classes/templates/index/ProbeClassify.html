@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" >
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content=""/>
+    <meta name="author" content=""/>
+    <link rel="icon" href="http://v3.bootcss.com/favicon.ico"/>
+
+    <title>Dashboard Template for Bootstrap</title>
+
+    <!-- Bootstrap core CSS -->
+    <link  href="bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/>
+
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <link href="ie10-viewport-bug-workaround.css" th:href="@{/css/ie10-viewport-bug-workaround.css}" rel="stylesheet"/>
+
+    <!-- Custom styles for this template -->
+    <link href="dashboard.css" th:href="@{/css/dashboard.css}" rel="stylesheet"/>
+
+    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+    <!--[if lt IE 9]><script src="ie8-responsive-file-warning.js" th:src="@{js/ie8-responsive-file-warning.js}"></script><![endif]-->
+    <script src="ie-emulation-modes-warning.js" th:src="@{/js/ie-emulation-modes-warning.js}"></script>
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <style type="text/css">
+      .dividePage{
+      text-align: center;
+       /* margin:0 auto;*/
+      }
+    /*  .pagination{
+      margin-top: 0px;
+      }*/
+    </style>
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">nvidia dvinfo</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="#">Enter your device Label or Series Nubmer</a></li> <!-- return false -->
+            <li><a th:href="@{/probeList}">probe list</a></li>
+            <li><a th:href="@{/borrowList}">borrow list</a></li>
+            <li><a href="#">Help</a></li>
+          </ul>
+          <form class="navbar-form navbar-right" ><!-- method="post" action="http://localhost:8090/searchProbe" th;action add the csrf token    onsubmit="return false"-->
+            <input type="text" class="form-control" name="num" placeholder="Search..."/>
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+            <input type="button" class="form-control btn-info"  value="Submit"/>
+
+          </form>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+          <ul class="nav nav-sidebar"  th:if="${not #lists.isEmpty(probeKind)}">
+
+            <li th:each="kind : ${probeKind}"><a href="#" th:text="${kind.name}">Action</a></li>
+            <li th:if="kindStat.index" role="separator" class="divider"></li>
+          </ul>
+
+        </div>
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+          <h1 class="page-header">Device</h1>
+
+          <div class="row placeholders">
+
+          </div>
+
+          <h2 class="sub-header">Probe List
+            <button type="button" class="btn btn-success" style="margin-left: 10px; padding-bottom: 6px; float: right; maring-right: 80px">Borrowing</button>
+            <button type="button" class="btn btn-info" style=" float: right; margin-left: 10px;">Storage</button>
+
+            <div class="dropdown" style="display:inline-block; float:right; font-size:30px; margin-right:45px">
+              <button type="button" class="btn btn-default btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                probe class
+                <span class="caret"></span>
+              </button>
+           <!--   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" style="color:black">Dropdown <span class="caret"></span></a> -->
+              <ul class="dropdown-menu"  th:remove="${#lists.isEmpty(probeKind)} ? all : all-but-first">
+
+                      <li th:each="kind:${probeKind}"><a href="#" th:text="${kind.name}">Action</a></li>
+                      <li th:if="${kindStat.index} % 3 == 0" role="separator" class="divider"></li>
+                      <li><a href="#">Another action</a></li>
+                      <li><a href="#">Something else here</a></li>
+                      <li role="separator" class="divider"></li>
+                      <li><a href="#">Separated link</a></li>
+                      <li role="separator" class="divider"></li>
+                      <li><a href="#">One more separated link</a></li>
+              </ul>
+            </div>
+          </h2>
+
+                <div class="table-responsive">
+                  <table class="table table-striped">
+                    <thead>
+                      <tr>
+                        <th>Name</th>
+                        <th >BarCode</th>
+                        <th>SN</th>
+                        <th>Label</th>
+                        <th >Borrower</th>
+                        <th>Start Time</th>
+                        <th>Return Time</th>
+                  <!--      <th>return</th>  -->
+                      </tr>
+
+                    </thead>
+                    <tbody th:remove="all-but-first"> <!--  style="white-space:pre"-->
+                      <tr th:each="probe : ${probeList}">
+                       <td style="vertical-align: middle" th:text="${probe.name}">1</td>
+                       <td style="vertical-align: middle" th:text="${probe.barCode}">Red chair</td>
+                       <td style="vertical-align: middle" th:text="${probe.sn}">Red chair</td>
+                       <td style="vertical-align: middle" th:text="${probe.label}">$350</td>
+                       <td style="vertical-align: middle" th:text="${probe.borrower}?:'-'">28-Jun-2013</td>
+                       <td style="vertical-align: middle" th:text="${probe.startTime != null}?${#dates.format(probe.startTime, 'dd/MMM/yyyy HH:mm')}:'-'">28-Jun-2013</td>
+                       <td style="vertical-align: middle" th:text="${probe.endTime != null}?${#dates.format(probe.endTime, 'dd/MMM/yyyy HH:mm')}:'-'">28-Jun-2013</td>
+                        <!--  <td style="border: 1px solid black; height:80%; width:13%; background: #9da; text-align: center; border-radius:2px">return</td>
+                       <td><button th:disabled="${probe.endTime} or (${probe.startTime == null} and ${probe.endTime == null})" class="btn btn-success" style="width: 93%; border-style: none" type="button">return</button></td>-->
+                        <td><button th:text="${probe.endTime} or (${probe.startTime == null } and ${probe.endTime == null}) ? 'borrow' : 'return'" class="btn btn-success" style="width: 93%; border-style: none" type="button">return</button></td><!-- th:text="${probe.endTime != null or (probe.startTime == null and probe.endTime == null)} -->
+                      </tr>
+
+
+                    </tbody>
+                  </table>
+                  <nav aria-label="Page navigation" class="dividePage">
+                    <ul class="pagination" style="margin-top:-5px;" th:remove="${probeNum} != 0 ? none : all"><!--  th:remove="${probeNum} != 0 ? none : all" -->
+                <li>
+                  <a href="#" aria-label="Previous" th:if="${probeNum} != 0">
+                    <span aria-hidden="true">&laquo;</span>
+                  </a>
+                </li>
+
+                <li th:class="${currentPage eq probeStat.index + 1} ? 'active'" th:each="probe:${probeNum}"><a href="#"  th:text="${probeStat.index} + 1">1</a></li>
+            <!--    <li><a href="#">2</a></li>
+                <li><a href="#">3</a></li>
+                <li><a href="#">4</a></li>
+                <li><a href="#">5</a></li> -->
+                <li>
+                  <a href="#" aria-label="Next" th:if="${probeNum} != 0 ">
+                    <span aria-hidden="true">&raquo;</span>
+                  </a>
+                </li>
+              </ul>
+            </nav>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script  src="jquery.min.js" th:src="@{/js/jquery.min.js}"></script>
+    <script src="bootstrap.min.js" th:src="@{/js/bootstrap.min.js}"></script>
+    <script type="text/javascript">
+    //<![CDATA[
+
+         $('.navbar-form').keydown(function(event){
+             if (event.keyCode == 13)
+                 return false;
+         });
+         $('.navbar-form input:text').keydown(function(event){
+             if (event.keyCode == 13){
+         //      console.log("keycode == 13");
+                 searchClick(event);
+                 return false;
+                 }
+         });
+         var currentActive;
+         var len = $(".dividePage li > a").length - 2;
+         $.each($(".dividePage li"), function(index, item){
+            console.log($(item).attr("className"))
+            if(item.className.length > 0){
+                if(item.className.indexOf("active") >= 0){
+                    currentActive = index;
+                  //  break;
+                    return false;
+                }
+            }
+         });
+
+         $(".dividePage li > a").click(function(event){
+            pageNav(this, event);
+          });
+
+
+         $(function(){
+             $(".navbar-form input:button").bind("click", function(event){
+                 searchClick(event);
+             });
+         });
+         function pageNav(th, event){
+             var $this = $(th);
+             if($this.parent("li").attr("class") != undefined){
+                 if($this.parent("li").attr("class").indexOf("active") != -1){  //$this.parent("li").attr("class")
+                     if(event.preventDefault)
+                         event.preventDefault();
+                     else
+                         event.returnValue = false;
+                     return;
+                 }
+             }
+             event = event || window.event;
+             if($this.attr("aria-label") == 'Previous'){
+                 if(currentActive == 1){
+                     if(event.preventDefault)
+                         event.preventDefault();
+                     else
+                         event.returnValue = false;
+                 }else{
+                     currentActive--;
+                     $this.attr("href", location.protocol + "//" + location.host +"/admin/groupBy/" + currentActive);  //"http://localhost:8090/probeList/"
+                 }
+             }else if($this.attr("aria-label") == 'Next'){
+                 if(currentActive == len){
+                     if(event.preventDefault)
+                         event.preventDefault();
+                     else
+                         event.returnValue = false;
+                 }else{
+                     currentActive++;
+                     $this.attr("href", location.protocol + "//" + location.host +"/admin/groupBy/" + currentActive);
+                 }
+             }else{
+                 console.log($this.html());
+             //  document.write($("this a:first-child").html());
+                 if(location.pathname.length >=  16){
+                         $this.attr("href", $this.html());
+                 /*
+                 if(location.href.substring(32).length > 0){
+                     if(parseInt(location.href.substring(32)) >= 1){
+                         $this.attr("href", $this.html());
+                     }*/
+                 }else{
+                     console.log(location.host + "/probeList/" + $this.html());
+                     $this.attr("href", location.protocol + "//" + location.host + '/admin/groupBy/' + $this.html());
+                 }
+             }
+         }
+         function searchClick(event){
+             event = event || window.event;
+             if(event.stopPropagation)
+                 event.stopPropagation();
+             else
+                 event.cancelBubble = true;
+             if($(".navbar-form input:first").val() == ""){
+                  return;
+             }
+             var csrfname = $(".navbar-form input:hidden").attr("name");
+             $.post(location.protocol + "//" + location.host + "/admin/searchProbe", {
+                 num:$(".navbar-form input:first").val(),
+                 "_csrf":$(".navbar-form input:hidden").val()
+                }, function(data){
+                    $("div.table-responsive").html($(data).filter("div.container-fluid").find("div.table-responsive").html());
+                    len = 1;
+                    currentActive = 1;
+                    $(".dividePage li > a").off("click");
+                    $(".dividePage li > a").click(function(event){
+                        pageNav(this, event);
+                    });
+                    setTimeout('addClick()', 1000);
+                }
+             );
+         }
+         $.each($(".dropdown > ul > li"), function(index, item){
+             if((index + 1) % 3 == 0){
+                 $(item).after('<li role="separator" class="divider"></li>');
+             }
+         });
+         $.each($("div.sidebar ul:first > li"), function(index, item){
+             if((index + 1) % 3 == 0){
+                 $(item).after('<li role="separator" class="divider" style="height:1px; background: #e5e5e5;"></li>');
+             }
+         });
+
+         $("div.sidebar ul:first > li").click(function(event){
+             $("div.sidebar ul:first > li[class*='active']").removeClass("active");
+
+             $this = $(this);
+             $this.addClass('active');
+             type = $this.children().eq(0).text();
+             if(event.preventDefault)
+                 event.preventDefault();
+             else
+                 event.returnValue = false;
+             $.ajax({
+                 url : location.protocol + "//" + location.host + "/admin/searchGroup",
+                 data : {code : $this.children().eq(0).text().replace(/\ /g, '-')},
+                 dataType: "text",
+                 success : function(data){
+                 //    $("div.table-responsive").html($(data).filter("div.container-fluid").find("div.table-responsive").html());
+                    var data = JSON.parse(data);
+                    console.log(data.length);
+                    $("div.table-responsive table tbody tr").remove();
+                    for(var i = 0; i < data.length; i++){
+                        var startTime = new Date(data[i].startTime);
+                        var endTime = new Date(data[i].endTime);
+                        $("div.table-responsive table tbody").append(
+                            '<tr>' +
+                            '<td style="vertical-align: middle">' + (data[i].name != null ? data[i].name : '-') + '</td>' +
+                            '<td style="vertical-align: middle">' + (data[i].barCode != null ? data[i].barCode : '-') + '</td>' +
+                            '<td style="vertical-align: middle">' + (data[i].sn != null ? data[i].sn : '-') + '</td>' +
+                            '<td style="vertical-align: middle">' + (data[i].label != null ? data[i].label : '-') + '</td>' +
+                            '<td style="vertical-align: middle">' + (data[i].borrower != null ? data[i].borrower : '-') + '</td>' +
+                            '<td style="vertical-align: middle">' + (data[i].startTime != null ? formateDate(data[i].startTime) : '-') + '</td>' +
+                            '<td style="vertical-align: middle">' + (data[i].endTime != null ? formateDate(data[i].endTime) : '-') + '</td>' +
+                            '<td style="vertical-align: middle">' + '<button class="btn btn-success" style="width: 93%; border-style: none">' + ((data[i].endTime != null || (data[i].endTime == null && data[i].startTime == null))? 'borrow' : 'return')  + '</button>' + '</td>' +
+                            '</tr>'
+                        );
+                    }
+                 }
+
+         //  $this.children().eq(0).attr("href", location.protocol + "//" + location.host + "/admin/searchGroup/" + $this.children().eq(0).text().replace(/\ /g, '-'));
+             });
+             var length = $(".dividePage li").length;
+             var items = $(".dividePage li");
+             $(".dividePage li").eq(1).addClass('active');
+             for(var i = 2; i < length - 1; i++){
+                  items.eq(i).remove();
+             }
+             len = 1;
+             currentActive = 1;
+             $(".dividePage li > a").off("click");
+             $(".dividePage li > a").click(function(event){
+                 pageNav(this, event);
+             });
+         //    $("div.table-responsive table tbody tr").off("click");
+            setTimeout('addClick()', 1000);
+
+
+
+         });
+         function formateDate(date){
+           var months = ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'];
+           var time = new Date(date);
+           var year = time.getFullYear();
+           var month = months[time.getMonth()];
+           var day = time.getDate();
+           var hour = time.getHours();
+           var minute = time.getMinutes();
+           // 08/十月/2012 00:00
+           return "" + (day < 10 ? '0' + day : day) + '/' + month + '/' + year + " " + (hour < 10 ? '0' + hour : hour) + ":" + (minute < 10 ? '0' + minute : minute);
+         }
+         $("div.container-fluid .sub-header > button:eq(1)").css("width", $("div.container-fluid .sub-header > button:eq(0)").css('width'));
+
+
+        $("div.container-fluid .sub-header > button:eq(0)").click(function(event){
+        //    $("div.table-responsive tbody tr td:nth-child(7):contains('/')").parent('tr').hide(3000);
+        //    $("div.table-responsive tbody tr td:nth-child(6):contains('-') + td:contains('-')").parent('tr').hide(3000);
+        //    $("div.table-responsive tbody tr td:nth-child(6):contains('/') + td:contains('-')").parent('tr').show(3000);
+
+            $.each($("div.table-responsive tbody tr:contains('borrow')"), function(index, item){
+                  if(!($(item).find("form").length > 0)){
+                    if($(item).next().length > 0 &&  $(item).next().find("form").length > 0){
+                        if($(item).next().find("span").text().length > 0){
+                            $(item).next().show(3000);
+                            $(item).show(3000);
+                        }else{
+                            $(item).next().hide(3000);
+                            $(item).hide(3000);
+                        }
+                    }
+                    else{
+                        $(item).hide(3000);
+                    }
+                }
+            });
+            $("div.table-responsive tbody tr td:nth-child(8):contains('return')").parent('tr').show(3000);
+
+
+        });
+
+        $("div.container-fluid .sub-header > button:eq(1)").click(function(event){
+        //    $("div.table-responsive tbody tr td:nth-child(7):contains('/')").parent('tr').show(3000);
+        //    $("div.table-responsive tbody tr td:nth-child(6):contains('-') + td:contains('-')").parent('tr').show(3000);
+        //    $("div.table-responsive tbody tr td:nth-child(6):contains('/') + td:contains('-')").parent('tr').hide(3000);
+
+            items = $("div.table-responsive tbody tr td:nth-child(8):contains('borrow')").parent('tr');
+            $.each($("div.table-responsive tbody tr:contains('borrow')"), function(index, item){
+                if(!($(item).find("form").length > 0)){
+                    if($(item).next().length > 0 &&  $(item).next().find("form").length > 0){
+                        if($(item).next().find("span").text().length > 0){
+                            $(item).next().hide(3000);
+                            $(item).hide(3000);
+                        }else{
+                            $(item).next().show(3000);
+                            $(item).show(3000);
+                        }
+                    }
+                    else{
+                        $(item).show(3000);
+                    }
+                }
+            });
+            $("div.table-responsive tbody tr td:nth-child(8):contains('return')").parent('tr').hide(3000);
+        });
+        $(".dropdown > ul > li:parent").click(function(event){
+             $this = $(this);
+             $(".dropdown > button").html($this.text() + '   <span class="caret"></span>');
+        });
+
+         function addClick(){
+          //   $("div.table-responsive tbody tr td:nth-child(7):contains('/') + td").children().attr("disabled", "disabled");
+          //   $("div.table-responsive tbody tr td:nth-child(6):contains('-') + td:contains('-')").next().children().attr("disabled", "disabled");
+             $("div.table-responsive tbody tr td button:contains('return')").dblclick(function(event){
+                 returnClick(this, event);
+                 $this = $(this);
+                 $this.off("dblclick");
+                 $this.dblclick(function(event){
+                     $this = $(this);
+                     if($this.parents("tr").next().length == 0 ||  $this.parents("tr").next().find("form").length == 0){
+                         borrowClick(this, event);
+                     }
+                 });
+             });
+
+             $("div.table-responsive tbody tr td button:contains('borrow')").dblclick(function(event){
+                 $this = $(this);
+                 if($this.parents("tr").next().length == 0 ||  $this.parents("tr").next().find("form").length == 0){
+                     borrowClick(this, event);//$this.parents("tr").next().children().eq(0).children().eq(0).get(0).nodeName
+                 }
+             });
+         }
+
+         $("div.table-responsive tbody tr td button:contains('return')").dblclick(function(event){
+            returnClick(this, event);
+            $this = $(this);
+            $this.off("dblclick");
+            $this.dblclick(function(event){
+                $this = $(this);
+                if($this.parents("tr").next().length == 0 ||  $this.parents("tr").next().find("form").length == 0){
+                   borrowClick(this, event);
+                }
+            });
+         });
+
+         $("div.table-responsive tbody tr td button:contains('borrow')").dblclick(function(event){
+            $this = $(this);
+            if($this.parents("tr").next().length == 0 ||  $this.parents("tr").next().find("form").length == 0){
+                   borrowClick(this, event);//$this.parents("tr").next().children().eq(0).children().eq(0).get(0).nodeName
+            }
+         });
+         function returnClick(th, event){
+            $this = $(th);
+            item = $this;
+     //       alert($this.parent('td').siblings(":eq(1)").text());
+            $.post(location.protocol + "//" + location.host + "/admin/return", {
+                num:$this.parent('td').siblings(":eq(3)").text(),
+                "_csrf":$(".navbar-form input:hidden").val()
+               }, function(data){
+                   if(data == 1){
+                      item.parent('td').siblings(":eq(6)").html(formateDate(new Date()));
+                      item.html("borrow");
+                      alert($this.parent('td').siblings(":eq(1)").text() + " returned successfully");
+                   }else if(data == 0){
+                      alert($this.parent('td').siblings(":eq(1)").text() + " returned error");
+                   }
+               }
+            );
+         }
+         var indent = parseInt($("div.table-responsive tbody tr:eq(0) td:eq(0)").css("width")) +
+                parseInt($("div.table-responsive tbody tr:eq(0) td:eq(1)").css("width")) +
+                parseInt($("div.table-responsive tbody tr:eq(0) td:eq(2)").css("width"));
+         var flag = 0;
+         var flagAjax = 0;
+         function borrowClick(th, event){
+            $this = $(th);
+            item = $this;
+            item.parents("tr").after(
+             '<tr>' + '<td colspan="8">' +
+             '<form class="form-inline" role="form" action="../borrowProbe" method="post">' +
+                '<div class="form-group">' +
+                  '<label for="borrowerName">name:</label>' +
+                  '<input type="text" class="form-control" id="borrowerName" name="borrowerName" placeholder="enter borrower name" />' +
+                '</div>' +
+                '<div class="form-group">' +
+                  '<label for="borrowerEmail">email:</label>' +
+                  '<input type="email" class="form-control" id="borrowerEmail" name="borrowerEmail" placeholder="enter email" />' +
+                '</div>' +
+                '<input type="hidden"' + 'name=' + $(".navbar-form input:hidden").attr("name") + '  value=' + $(".navbar-form input:hidden").val() + ' />' +
+                '&nbsp;&nbsp; <input type="button" class="form-control btn-primary"  value="Submit"/>' +
+                '      <span><span>' +
+             '</form>' + '</td>' +
+             '</tr>'
+
+            );
+            setTimeout(setIndent, 500);
+
+            $("div.table-responsive tbody tr form input:button:not(:disabled)").click(function(event){
+                $this = $(this);
+             //   $this.attr("disabled", true);
+                if(flag == 0){
+                    console.log('before flag++ ' + flag);
+                    flag++;
+                    flagAjax = 1;
+                }else{
+                //    $this.attr("disabled", false);
+                    if(flagAjax == 1 || flagAjax == 2 || flagAjax == 3){
+                  //  console.log('before return flag=' + flag);
+                        flagAjax++;
+                        return;
+                    }
+                }
+
+                console.log('flag=' + flag);
+                console.log('flagAjax=' + flagAjax);
+                if(event.preventDefault){
+                    event.preventDefault();
+                }else{
+                    event.returnValue = false;
+                }
+                console.log('after return flag=' + flag);
+                $.post(location.protocol + "//" + location.host + "/admin/borrowProbe", {
+                    borrowerName : $this.parent('form').children("div.form-group:first").children("input:text").val(),
+                    borrowerEmail : $this.parent('form').children("div.form-group:eq(1)").children("input").val(),
+                    "_csrf" : $this.prev().val(),
+                    label : $this.closest('tr').prev().children().eq(3).text()
+                    }, function(data){
+                        flagAjax = 0;
+                        flag = 0;
+                        if(data == "0"){
+
+                            $this.siblings("span").html("&nbsp; &nbsp; borrowed by " + $this.parent('form').children("div.form-group:first").children("input:text").val());
+                            $this.attr("disabled", true);
+                        }else{
+                            $this.attr("disabled", false);
+                        }
+                    }
+                );
+             //flagAjax = 2;
+            });
+
+         }
+         function setIndent(){
+            var indentVar = indent - parseInt($("div.table-responsive tbody tr form div:eq(0)").css("width"));
+            $.each($("div.table-responsive tbody tr form"), function(index, item){
+                $item = $(item);
+                $item.children("div").eq(1).children("label").css("text-indent", indentVar + "px");
+            });
+         //   $("div.table-responsive tbody tr form div:eq(1) label").css("text-indent", indentVar + "px");
+         }
+
+
+    //]]>
+    </script>
+
+
+
+    <!-- Just to make our placeholder images work. Don't actually copy the next line! -->
+    <script src="holder.min.js" th:src="@{/js/holder.min.js}"></script>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="ie10-viewport-bug-workaround.js" th:src="@{/js/ie10-viewport-bug-workaround.js}"></script>
+  </body>
+</html>

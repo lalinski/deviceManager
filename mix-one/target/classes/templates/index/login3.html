@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>Login page</title>
+        <meta charset="utf-8" />
+        <style type="text/css">
+            body {
+                font-family: sans;
+                font-size: 1em;
+            }
+            p.error {
+                font-weight: bold;
+                color: red;
+            }
+           form{
+
+
+           text-align:center;
+           }
+           input{
+           width:50%;
+            height:50%;
+            display=inline;
+           }
+        </style>
+	</head>
+    <body>
+        <h1>Login page</h1>
+        <p>Example user: user / password</p>
+
+        <form th:action="login4" method="get" >
+            <label for="username">Username</label>:
+            <input type="text" id="username" name="username" autofocus="autofocus" /> <br />
+            <label for="password">Password</label>:
+            <input type="password" id="password" name="password" /> <br />
+            <input type="submit" value="Log in" />
+        </form>
+        <p><a href="/index" th:href="@{/index}">Back to home page</a></p>
+    </body>
+</html>

@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content=""/>
+    <meta name="author" content=""/>
+    <link rel="icon" href="http://v3.bootcss.com/favicon.ico"/>
+
+    <title>Jumbotron Template for Bootstrap</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="css/bootstrap.min.css"  th:href="@{/css/bootstrap.min.css}" rel="stylesheet" />
+
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <link href="css/ie10-viewport-bug-workaround.css" th:href="@{/css/ie10-viewport-bug-workaround.css}" rel="stylesheet"/>
+
+    <!-- Custom styles for this template -->
+    <link href="css/jumbotron.css" th:href="@{/css/jumbotron.css}" rel="stylesheet"/>
+
+    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+    <!--[if lt IE 9]><script src="js/ie8-responsive-file-warning.js" th:src="@{js/ie8-responsive-file-warning.js}"></script><![endif]-->
+    <script src="js/ie-emulation-modes-warning.js" th:src="@{/js/ie-emulation-modes-warning.js}"></script>
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">nvidia dvinfo</a>
+        </div>
+
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+                <li><a th:href="@{/admin/groupBy/}">borrow&amp;return</a></li>
+                <li><a th:href="@{/probeList}">probe list</a></li>
+                <li><a href="#">Help</a></li>
+          </ul>
+          <form class="navbar-form navbar-right">
+            <div class="form-group">
+              <input type="text" placeholder="your name" class="form-control"/>
+            </div>
+            <button type="submit" class="btn btn-success">Submit</button>
+          </form>
+
+        </div><!--/.navbar-collapse -->
+      </div>
+    </nav>
+
+    <!-- Main jumbotron for a primary marketing message or call to action -->
+    <div class="jumbotron">
+      <div class="container">
+        <h2>Device Borrowed List</h2>
+        <p>This is a table contains all the borrowed probes, you can enter your name in the search section to look at your probe borrowing situation</p>
+        <p><a class="btn btn-primary btn-lg" th:href="@{/admin/groupBy/}" role="button">Borrow&amp;Return &raquo;</a></p>
+      </div>
+    </div>
+
+    <div class="container" style="width:100%; padding-left:5px; padding-right:5px;">
+      <!-- Example row of columns -->
+<!--      <div class="row">
+        <div class="col-md-4">
+          <h2>Heading</h2>
+          <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
+          <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
+        </div>
+      </div> -->
+      <div class="table-responsive">
+        <table class="table table-striped" style="text-align:center;">
+          <thead>
+          <tr>
+            <th style="text-align:left;">Device Name</th>
+            <th >Device Label</th>
+            <th >Borrower</th>
+            <th >Start Time</th>
+            <th >Return Time</th>
+            <th >duration</th>
+            <th >Over days</th>
+          </tr>
+          </thead>
+          <tbody th:remove="all-but-first">
+          <tr th:each="borrowerItem: ${borrowLists}">
+            <td th:text="${borrowerItem.deviceName}" th:align="left">1</td>
+            <td th:text="${borrowerItem.deviceLabel}" th:align="left">Red chair</td>
+            <td th:text="${borrowerItem.borrower}" th:align="left">Red chair</td>
+            <td th:text="${borrowerItem.startTime} ? ${#dates.format(borrowerItem.startTime, 'dd/MMM/yyyy HH:mm')}:'-'" th:align="left">28-Jun-2013</td>
+            <td th:text="${borrowerItem.returnTime != null}?${#dates.format(borrowerItem.returnTime, 'dd/MMM/yyyy HH:mm')}:'-'" th:align="left">28-Jun-2013</td>
+            <td th:text="${borrowerItem.duration}?:'-'" th:align="left">28-Jun-2013</td>
+            <td th:text="${borrowerItem.overdays}?:'-'" th:align="left">28-Jun-2013</td>
+          </tr>
+          <tr>
+            <td>1,001</td>
+            <td>Lorem</td>
+            <td>ipsum</td>
+            <td>dolor</td>
+            <td>sit</td>
+          </tr>
+
+          </tbody>
+        </table>
+        <nav aria-label="Page navigation" class="dividePage" style="text-align: center;">
+          <ul class="pagination" style="margin-top:-5px;" th:remove="${borrowerNum} != 0 ? none : all"><!--  th:remove="${probeNum} != 0 ? none : all" -->
+            <li>
+              <a href="#" aria-label="Previous" th:if="${borrowerNum} != 0">
+                <span aria-hidden="true">&laquo;</span>
+              </a>
+            </li>
+
+            <li th:class="${currentPage eq borrowerStat.index + 1} ? 'active'" th:each="borrower:${borrowerNum}"><a href="#"  th:text="${borrowerStat.index} + 1">1</a></li>
+            <!--    <li><a href="#">2</a></li>
+                <li><a href="#">3</a></li>
+                <li><a href="#">4</a></li>
+                <li><a href="#">5</a></li> -->
+            <li>
+              <a href="#" aria-label="Next" th:if="${borrowerNum} != 0 ">
+                <span aria-hidden="true">&raquo;</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+
+      <hr/>
+
+      <footer>
+        <p  th:text="${rq}? '&copy; ' + ${#dates.year(rq)} + ' Nvidia  Company, Inc.'"></p>
+     <!--   <p th:text="${#dates.createNow()} Nvidia  Company, Inc."></p>  -->
+      </footer>
+    </div> <!-- /container -->
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="js/jquery.min.js" th:src="@{/js/jquery.min.js}"></script>
+
+    <script src="js/bootstrap.min.js" th:src="@{/js/bootstrap.min.js}"></script>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="ie10-viewport-bug-workaround.js" th:src="@{/js/ie10-viewport-bug-workaround.js}"></script>
+    <script type="text/javascript">
+       $("div.collapse form button").click(function(event){
+           var text = $("div.collapse form input:text").val().trim();
+           if(text == ""){
+               return false;
+           }
+           $.each($("div.table-responsive tbody tr"), function(index, item){
+               if($(item).children().eq(2).text().trim().indexOf(text) != -1){
+                   $(item).show(3000);
+               }else{
+                   $(item).hide(3000);
+               }
+           });
+           event = event  || window.event;
+           if(event.preventDefault)
+               event.preventDefault;
+           else
+               event.returnValue = false;
+           if(event.stopPropgation)
+               event.stopPropgation();
+           else
+               event.cancelBubble = true;
+           return false;
+        //   $("div.table-responsive tbody tr td:eq(2):contains(" + text +")").hide(3000);
+       });
+    </script>
+  </body>
+</html>

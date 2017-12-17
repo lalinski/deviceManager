@@ -1,0 +1,44 @@
+spring:
+  application:
+    name: @project.artifactId@
+  profiles:
+    active: dev
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/blog?useSSL=true
+    username: root
+    password: lescott2012
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  mail:
+    host: mailgw.nvidia.com
+    username: frzhao@nvidia.com
+    password: u2N7PyAf1
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+server:
+  port: 8090
+  ssl:
+    clientAuth: want
+    protocol: TLS
+    enabled: false
+  compression:
+    enabled: true
+    mime-types: text/html,text/xml,text/javascript,text/css,text/plain,application/javascript
+    min-response-size: 2048
+    excluded-user-agents: gozilla,traviata
+  session:
+    timeout: 7200
+endpoints:
+  enabled: false
+  info:
+    enabled: true
+  health:
+    enabled: true
