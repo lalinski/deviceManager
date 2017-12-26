@@ -13,8 +13,8 @@ spring:
       ddl-auto: update
     show-sql: true
   mail:
-    host: smtp.126.com     #mailgw.nvidia.com
-    username: thecentreword@126.com  #frzhao@nvidia.com
+    host: smtp.126.com
+    username: thecentreword@126.com  
     password:
     properties:
       mail:
