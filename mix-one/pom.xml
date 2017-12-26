@@ -6,13 +6,14 @@
         <artifactId>web-blog</artifactId>
         <groupId>com.lalin.test.site.blog</groupId>
         <version>1.0-SNAPSHOT</version>
+
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>mix-one</artifactId>
 
     <properties>
-        <start-class>com.qy.insurance.link.demo.mobile.Application</start-class>
+        <start-class>com.lalin.test.site.blog.mix.one.Application</start-class>
     </properties>
 
     <dependencies>
@@ -66,7 +67,7 @@
             <version>4.0</version>
 
         </dependency>-->
-        <dependency>
+            <dependency>
             <groupId>com.microsoft.sqlserver</groupId>
             <artifactId>mssql-jdbc</artifactId>
             <version>6.2.1.jre8</version>

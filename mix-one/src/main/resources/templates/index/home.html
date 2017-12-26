@@ -7,10 +7,14 @@
 <body>
 <p th:text="'Access at ' + ${dataTime} + '.'"/>
 <form th:action="register" method="post">
-    <label for="username">Username</label>:
+    <label for="username">Username</label>:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <input type="text" id="username" name="username" autofocus="autofocus" /> <br />
-    <label for="password">Password</label>:
+
+    <label for="inputEmail" class="sr-only">Email address</label>:
+    <input type="email" id="inputEmail" class="form-control" name="email"/><br/>
+    <label for="password">Password</label>:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <input type="password" id="password" name="password" /> <br />
+
     <input type="submit" value="register" />
 </form>
 </body>

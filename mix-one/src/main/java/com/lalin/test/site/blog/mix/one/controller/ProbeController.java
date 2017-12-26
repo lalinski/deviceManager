@@ -17,7 +17,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
-import sun.security.util.Resources;
+
 
 
 import javax.annotation.Resource;
@@ -100,7 +100,7 @@ public class ProbeController {
     }
     @RequestMapping(value = "/return", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<Integer> ProbeReturn(@RequestParam String num){
+    public synchronized ResponseEntity<Integer> ProbeReturn(@RequestParam String num){
         System.out.println("the return label is " + num);
         Probe probe = probeService.findByLabel(num);
         probe.setEndTime(new Date());
@@ -134,24 +134,31 @@ public class ProbeController {
     }
     @RequestMapping(value = "/borrowProbe", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity borrowProbe(@RequestParam String borrowerName, @RequestParam(required = false) String borrowerEmail, @RequestParam("label") String labelName, HttpServletResponse response) throws MessagingException, IOException {
+    public synchronized ResponseEntity borrowProbe(@RequestParam String borrowerName, @RequestParam(required = false) String borrowerEmail, @RequestParam("label") String labelName, HttpServletResponse response) {
+        Employee employee = null;
+
         System.out.println("borrow name: " + borrowerName);
         System.out.println("borrow email: " + borrowerEmail);
         System.out.println("label name: " + labelName);
-        Employee employee = employeeService.existEmployee(borrowerName);
-        if(employee != null) {
-            response.getWriter().write("0");
+        employee = employeeService.existEmployee(borrowerName);
+        if(employee == null) {
+                return new ResponseEntity(1, HttpStatus.OK);
         }
         System.out.println("employee : " + employee);
         Probe probe = probeService.findByLabel(labelName);
         System.out.println("probe : " + probe);
-        if(employee != null) {
-         //   response.getWriter().write("0");
-         //   response.getWriter().flush();
-            deviceBorrowService.borrowProbe(employee, probe);
+        try {
+            if(employee != null) {
+                deviceBorrowService.borrowProbe(employee, probe);
+            }
+        } catch (MessagingException e) {
+            e.printStackTrace();
+            System.out.println("email exception");
+        }finally {
+            return new ResponseEntity(0, HttpStatus.OK);
         }
 
-        return null;//new ResponseEntity(0, HttpStatus.OK);
+
     }
     @RequestMapping("/email")
     public String emialLook(Model model){

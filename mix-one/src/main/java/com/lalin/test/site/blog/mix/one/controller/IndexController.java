@@ -51,10 +51,6 @@ public class IndexController {
         model.addAttribute("loginError", true);
         return "index/login";
     }
- /*   @PostMapping("/register")
-    public String registerThen() {
-        return "index/home";
-    }*/
     @RequestMapping("/home")
     public String register(Model model) {
         SimpleDateFormat formatter = TimeFormatUtil.getFormatter(TimeFormatUtil.EXTENDED_CALENDAR_DATES_TIMES);

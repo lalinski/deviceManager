@@ -24,7 +24,7 @@ public interface ProbeRepository extends JpaRepository<Probe, Integer> {
     public Probe findByLabel(String label);
 
     @Modifying
-    @Query("update Probe o set endTime = ?1, Status='Storage' where label = ?2")
+    @Query("update Probe o set endTime = ?1, Status='Storage', borrowedNow = false where label = ?2")
     public int updateReturnTimeByLabel(Date date, String label);
 
     @Modifying

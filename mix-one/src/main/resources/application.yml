@@ -5,23 +5,29 @@ spring:
     active: dev
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://127.0.0.1:3306/blog?useSSL=true
+    url: jdbc:mysql://127.0.0.1:3306/blog   #?useSSL=true
     username: root
-    password: lescott2012
+    password: lescott2012        #Lescott2012!
   jpa:
     hibernate:
       ddl-auto: update
     show-sql: true
   mail:
-    host: mailgw.nvidia.com
-    username: frzhao@nvidia.com
-    password: u2N7PyAf1
+    host: smtp.126.com     #mailgw.nvidia.com
+    username: thecentreword@126.com  #frzhao@nvidia.com
+    password:
     properties:
       mail:
         smtp:
           auth: true
           starttls:
             enable: true
+          socketFactory:
+            port: 465
+            class: javax.net.ssl.SSLSocketFactory
+            fallback: false
+    port: 465
+
 
 server:
   port: 8090

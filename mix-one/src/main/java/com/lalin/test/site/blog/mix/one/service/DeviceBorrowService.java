@@ -49,29 +49,34 @@ public class DeviceBorrowService {
         return borrowListRepository.returnId(label);
     }
 
-    public int borrowProbe(Employee employee, Probe probe) throws MessagingException {
-        DeviceBorrowList deviceBorrowOne = new DeviceBorrowList();
-    //    deviceBorrowOne.setDeviceType("Probe");
-        deviceBorrowOne.setDeviceName(probe.getName());
-        deviceBorrowOne.setDeviceLabel(probe.getLabel());
-        deviceBorrowOne.setDeviceId(probe.getId().toString());
-        deviceBorrowOne.setLender("Joe Zhao");
-        deviceBorrowOne.setBorrower(employee.getDisplayName());
-        deviceBorrowOne.setStartTime(new Date());
-        deviceBorrowOne.setStatus("loan");
-        int saveId = borrowListRepository.save(deviceBorrowOne).getId();
-        BorrowingProbe borrowingProbe = new BorrowingProbe();
-        borrowingProbe.setBorrowListId(saveId);
-        borrowingService.save(borrowingProbe);
-     //   System.out.println("save " + borrowListRepository.save(deviceBorrowOne));
-        emailEmbeddThymeleaf.sendBorrowingInfo(deviceBorrowOne);
-        probe.setStatus("loan");
-        probe.setBorrowedNow(true);
-        probe.setBorrower(employee.getDisplayName());
-        probe.setStartTime(new Date());
-        probe.setEndTime(null);
-        probeService.updateBorrowProbe(probe);
-        return 1;
+    public synchronized int borrowProbe(Employee employee, Probe probe) throws MessagingException {
+        if(!probe.isBorrowedNow()) {
+            System.out.println("probe.isBorrowedNow()" + probe.isBorrowedNow());
+            DeviceBorrowList deviceBorrowOne = new DeviceBorrowList();
+            //    deviceBorrowOne.setDeviceType("Probe");
+            deviceBorrowOne.setDeviceName(probe.getName());
+            deviceBorrowOne.setDeviceLabel(probe.getLabel());
+            deviceBorrowOne.setDeviceId(probe.getId().toString());
+            deviceBorrowOne.setLender("Joe Zhao");
+            deviceBorrowOne.setBorrower(employee.getDisplayName());
+            deviceBorrowOne.setStartTime(new Date());
+            deviceBorrowOne.setStatus("loan");
+            int saveId = borrowListRepository.save(deviceBorrowOne).getId();
+            BorrowingProbe borrowingProbe = new BorrowingProbe();
+            borrowingProbe.setBorrowListId(saveId);
+            borrowingService.save(borrowingProbe);
+            //   System.out.println("save " + borrowListRepository.save(deviceBorrowOne));
+            emailEmbeddThymeleaf.sendBorrowingInfo(deviceBorrowOne);
+            probe.setStatus("loan");
+            probe.setBorrowedNow(true);
+            probe.setBorrower(employee.getDisplayName());
+            probe.setStartTime(new Date());
+            probe.setEndTime(null);
+            probeService.updateBorrowProbe(probe);
+            return 1;
+        }else{
+            return 0;
+        }
     }
     public DeviceBorrowList findById(Integer id){
         return borrowListRepository.findOne(id);

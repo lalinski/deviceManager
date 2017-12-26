@@ -36,4 +36,7 @@ public class EmployeeService {
         }
 
     }
+    public int maxId(){
+        return employeeRepository.maxId();
+    }
 }

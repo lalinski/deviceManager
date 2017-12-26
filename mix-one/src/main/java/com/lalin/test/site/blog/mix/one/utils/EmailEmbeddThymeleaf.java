@@ -56,9 +56,10 @@ public class EmailEmbeddThymeleaf {
 
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true);
-        helper.setFrom(new InternetAddress("frzhao@nvidia.com"));
-//        helper.setTo("slli@nvidia.com");
+        helper.setFrom(new InternetAddress("thecentreword@126.com"));
+ //       helper.setTo("761571595@qq.com");
         helper.setTo(employeeService.findByName(personEmail.get(0).getBorrower()).getEmail());
+        System.out.println(employeeService.findByName(personEmail.get(0).getBorrower()).getEmail());
         helper.setSubject("Embedded thymeleaf");
         Context context = new Context();
         context.setVariable("borrowLists", personEmail);

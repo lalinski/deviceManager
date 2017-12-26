@@ -17,4 +17,6 @@ public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
     public List<Employee> findByName(String name);
     @Query(nativeQuery = true, value = "select * from employee where email = ?1")
     public Employee findByEmail(String email);
+    @Query(nativeQuery = true, value = "select max(id) from employee")
+    public Integer maxId();
 }

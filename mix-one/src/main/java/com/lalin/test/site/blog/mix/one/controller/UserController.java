@@ -53,13 +53,30 @@ public class UserController {
     private BorrowingService borrowingService;
     public static Logger logger = LoggerFactory.getLogger(UserController.class);
     @RequestMapping("/register")
-    public String userSave(@RequestParam("username") String name, @RequestParam("password") String password){
+    @ResponseBody
+    public String userSave(@RequestParam("username") String name, @RequestParam("password") String password, @RequestParam String email){
+        if(StringUtils.isEmpty(name) || StringUtils.isEmpty(password) || StringUtils.isEmpty(email)){
+            return "register missing paratemer";
+        }
         Employee employee = new Employee();
+        if(employeeRepository.maxId() == null){
+            employee.setId(1);
+        }else{
+            employee.setId(employeeRepository.maxId() + 1);
+        }
+
         employee.setUsername(name);
+        employee.setDisplayName(name);
         employee.setPassword(password);
+        employee.setEmail(email);
+        System.out.println(name);
+        System.out.println(password);
+        System.out.println(email);
         SimpleGrantedAuthority grant = new SimpleGrantedAuthority("ROLE_USER");
+        SimpleGrantedAuthority grant1 = new SimpleGrantedAuthority("ROLE_ADMIN");
         Set<SimpleGrantedAuthority> set = new HashSet<SimpleGrantedAuthority>();
         set.add(grant);
+        set.add(grant1);
         employee.setAuthorities(set);
         employeeRepository.save(employee);
      //   return "forward:/index";

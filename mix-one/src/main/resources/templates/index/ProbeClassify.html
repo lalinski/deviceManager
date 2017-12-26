@@ -542,7 +542,7 @@
                     }, function(data){
                         flagAjax = 0;
                         flag = 0;
-                        if(data == "0"){
+                        if(data == 0){
 
                             $this.siblings("span").html("&nbsp; &nbsp; borrowed by " + $this.parent('form').children("div.form-group:first").children("input:text").val());
                             $this.attr("disabled", true);

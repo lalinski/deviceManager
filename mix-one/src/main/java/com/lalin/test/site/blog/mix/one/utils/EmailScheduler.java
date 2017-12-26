@@ -34,7 +34,7 @@ public class EmailScheduler{
     }
     @PostConstruct
     public void  sendEmail(){
-    //    scheduler.schedule(new EmailThread(0), new Date(System.currentTimeMillis() + 1000));
+     //   scheduler.schedule(new EmailThread(0), new Date(System.currentTimeMillis() + 1000));
         scheduler.schedule(new EmailThread(0), cron);
     }
 
@@ -52,6 +52,7 @@ public class EmailScheduler{
             System.out.println("This is " + i + " emails");
             try {
                 emailEmbeddThymeleaf.sendMail();
+             //   emailEmbeddThymeleaf.sendThymeleaf(null);
                 i++;
             } catch (MessagingException e) {
                 e.printStackTrace();
