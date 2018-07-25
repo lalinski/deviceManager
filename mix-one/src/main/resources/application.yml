@@ -14,7 +14,7 @@ spring:
     show-sql: true
   mail:
     host: smtp.126.com
-    username: thecentreword@126.com
+    username: thecentreword@xx.com
     password:
     properties:
       mail:
